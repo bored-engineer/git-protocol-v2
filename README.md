@@ -4,7 +4,7 @@ A Golang package for reading/writing the [Git protocol-v2 format](https://git-sc
 ## Usage
 The [cmd/](./cmd/) directory contains example CLIs which demonstrate a working [protocol-v2](https://git-scm.com/docs/protocol-v2) client using the HTTP transport, ex:
 
-```shell
+```console
 $ go install github.com/bored-engineer/git-protocol-v2/...@latest
 $ git-v2-capabilities https://github.com/bored-engineer/git-protocol-v2
 agent=git/github-8e2ff7c5586f
