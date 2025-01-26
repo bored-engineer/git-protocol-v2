@@ -32,8 +32,8 @@ func main() {
 		pflag.Usage()
 		os.Exit(1)
 	}
-
 	url := pflag.Arg(0) + "/info/refs?service=" + *service
+
 	reqHTTP, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		log.Fatalf("http.NewRequest failed: %v", err)
@@ -44,7 +44,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("http.DefaultClient.Do failed: %v", err)
 	}
-	defer respHTTP.Body.Close()
+	defer func() {
+		if err := respHTTP.Body.Close(); err != nil {
+			log.Fatalf("(*http.Response).Body.Close failed: %v", err)
+		}
+	}()
 
 	if respHTTP.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(respHTTP.Body)

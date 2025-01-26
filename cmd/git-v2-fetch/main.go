@@ -47,12 +47,13 @@ func main() {
 		pflag.Usage()
 		os.Exit(1)
 	}
+	url := pflag.Arg(0) + "/git-upload-pack"
 
+	// The --stdin flag allows us to add 'wants' directly piped from the output of 'ls-refs'
 	if *stdin {
 		scanner := bufio.NewScanner(os.Stdin)
 		uniq := make(map[string]struct{})
 		for scanner.Scan() {
-			// permit the output from ls-refs to be passed directly as the input by ignoring the ref names, just capturing the UID
 			oid, _, _ := strings.Cut(scanner.Text(), " ")
 			uniq[oid] = struct{}{}
 		}
@@ -63,7 +64,6 @@ func main() {
 			*want = append(*want, oid)
 		}
 	}
-
 	if len(*want) == 0 && len(*wantRefs) == 0 {
 		fmt.Fprintln(os.Stderr, "At least one '--want' or '--want-ref' is required")
 		os.Exit(1)
@@ -172,7 +172,6 @@ func main() {
 		Key: git.ArgumentDone,
 	})
 
-	url := pflag.Arg(0) + "/git-upload-pack"
 	reqHTTP, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(req.Bytes()))
 	if err != nil {
 		log.Fatalf("http.NewRequest failed: %v", err)
@@ -183,7 +182,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("http.DefaultClient.Do failed: %v", err)
 	}
-	defer respHTTP.Body.Close()
+	defer func() {
+		if err := respHTTP.Body.Close(); err != nil {
+			log.Fatalf("(*http.Response).Body.Close failed: %v", err)
+		}
+	}()
 
 	if respHTTP.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(respHTTP.Body)

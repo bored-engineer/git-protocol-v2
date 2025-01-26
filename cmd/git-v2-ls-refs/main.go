@@ -35,11 +35,11 @@ func main() {
 		pflag.Usage()
 		os.Exit(1)
 	}
+	url := pflag.Arg(0) + "/git-upload-pack"
 
 	req := git.CommandRequest{
 		Command: "ls-refs",
 	}
-
 	for _, cap := range *capabilities {
 		key, value, _ := strings.Cut(cap, "=")
 		req.Capabilities = append(req.Capabilities, git.Capability{
@@ -70,7 +70,6 @@ func main() {
 		})
 	}
 
-	url := pflag.Arg(0) + "/git-upload-pack"
 	reqHTTP, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(req.Bytes()))
 	if err != nil {
 		log.Fatalf("http.NewRequestWithContext failed: %v", err)
@@ -81,7 +80,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("http.DefaultClient.Do failed: %v", err)
 	}
-	defer respHTTP.Body.Close()
+	defer func() {
+		if err := respHTTP.Body.Close(); err != nil {
+			log.Fatalf("(*http.Response).Body.Close failed: %v", err)
+		}
+	}()
 
 	if respHTTP.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(respHTTP.Body)
