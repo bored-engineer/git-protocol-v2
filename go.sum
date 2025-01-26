@@ -1,2 +1,4 @@
 github.com/bored-engineer/git-pkt-line v0.0.0-20250125231634-c00e39a423a0 h1:de4V41EmaWASihgyOJ1ApUBdIIbs3iByGewhG3x0/cM=
 github.com/bored-engineer/git-pkt-line v0.0.0-20250125231634-c00e39a423a0/go.mod h1:jieYBtYTgI8c09fc0zwTQVXhg2ZPt2k4t6fxz9OcBaQ=
+github.com/spf13/pflag v1.0.5 h1:iy+VFUOCP1a+8yFto/drg2CJ5u0yRoB7fZw3DKv/JXA=
+github.com/spf13/pflag v1.0.5/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
