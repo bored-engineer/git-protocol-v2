@@ -6,16 +6,17 @@ The [cmd/](./cmd/) directory contains example CLIs which demonstrate a working [
 
 ```console
 $ go install github.com/bored-engineer/git-protocol-v2/...@latest
-$ git-v2-capabilities https://github.com/bored-engineer/git-protocol-v2
+$ URL=https://github.com/bored-engineer/git-protocol-v2
+$ git-v2-capabilities $URL
 agent=git/github-8e2ff7c5586f
 ls-refs=unborn
 fetch=shallow wait-for-done filter
 server-option
 object-format=sha1
-$ git-v2-ls-refs --symrefs https://github.com/bored-engineer/git-protocol-v2
+$ git-v2-ls-refs --symrefs $URL
 b0819254e1af48969fa88aff09e7563cc5fcec6d HEAD symref-target:refs/heads/main
 b0819254e1af48969fa88aff09e7563cc5fcec6d refs/heads/main
-$ git-v2-fetch --want b0819254e1af48969fa88aff09e7563cc5fcec6d https://github.com/bored-engineer/git-protocol-v2 > fetch.pack
+$ git-v2-fetch --want b0819254e1af48969fa88aff09e7563cc5fcec6d $URL > fetch.pack
 Enumerating objects: 43, done.
 Counting objects: 100% (43/43), done.
 Compressing objects: 100% (30/30), done.
