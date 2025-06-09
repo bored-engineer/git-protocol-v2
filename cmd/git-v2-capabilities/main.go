@@ -23,6 +23,7 @@ func main() {
 
 	service := pflag.String("service", "git-upload-pack", "service parameter in the query string")
 	smart := pflag.Bool("smart", true, "expect smart HTTP protocol response")
+	userAgent := pflag.String("user-agent", "git/1.0", "Set the User-Agent header in the HTTP request.")
 	pflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options] <url>\n", filepath.Base(os.Args[0]))
 		pflag.PrintDefaults()
@@ -39,6 +40,7 @@ func main() {
 		log.Fatalf("http.NewRequest failed: %v", err)
 	}
 	reqHTTP.Header.Set("Git-Protocol", "version=2")
+	reqHTTP.Header.Set("User-Agent", *userAgent)
 
 	respHTTP, err := http.DefaultClient.Do(reqHTTP)
 	if err != nil {

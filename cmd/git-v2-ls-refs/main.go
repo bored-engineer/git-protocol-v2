@@ -26,6 +26,7 @@ func main() {
 	unborn := pflag.Bool("unborn", false, "request unborn refs")
 	refPrefixes := pflag.StringSlice("ref-prefix", nil, "When specified, only references having a prefix matching one of the provided prefixes are displayed. Multiple instances may be given, in which case references matching any prefix will be shown. Note that this is purely for optimization; a server MAY show refs not matching the prefix if it chooses, and clients should filter the result themselves.")
 	capabilities := pflag.StringSlice("capability", nil, "Advertise a client capability in the command-request.")
+	userAgent := pflag.String("user-agent", "git/1.0", "Set the User-Agent header in the HTTP request.")
 	pflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options] <url>\n", filepath.Base(os.Args[0]))
 		pflag.PrintDefaults()
@@ -75,6 +76,7 @@ func main() {
 		log.Fatalf("http.NewRequestWithContext failed: %v", err)
 	}
 	reqHTTP.Header.Set("Git-Protocol", "version=2")
+	reqHTTP.Header.Set("User-Agent", *userAgent)
 
 	respHTTP, err := http.DefaultClient.Do(reqHTTP)
 	if err != nil {

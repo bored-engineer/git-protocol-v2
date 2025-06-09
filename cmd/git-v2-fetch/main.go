@@ -38,6 +38,7 @@ func main() {
 	packfileURIs := pflag.StringSlice("packfile-uris", nil, "Indicates to the server that the client is willing to receive URIs of any of the given protocols in place of objects in the sent packfile. Before performing the connectivity check, the client should download from all given URIs. Currently, the protocols supported are 'http' and 'https'.")
 	stdin := pflag.Bool("stdin", false, "Read the 'want' lines from stdin instead of '--want'.")
 	capabilities := pflag.StringSlice("capability", nil, "Advertise a client capability in the command-request.")
+	userAgent := pflag.String("user-agent", "git/1.0", "Set the User-Agent header in the HTTP request.")
 	pflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options] <url>\n", filepath.Base(os.Args[0]))
 		pflag.PrintDefaults()
@@ -177,6 +178,7 @@ func main() {
 		log.Fatalf("http.NewRequest failed: %v", err)
 	}
 	reqHTTP.Header.Set("Git-Protocol", "version=2")
+	reqHTTP.Header.Set("User-Agent", *userAgent)
 
 	respHTTP, err := http.DefaultClient.Do(reqHTTP)
 	if err != nil {
